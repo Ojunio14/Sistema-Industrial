@@ -1,6 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://3h2vyafju8r5"]
+[gd_scene load_steps=10 format=3 uid="uid://3h2vyafju8r5"]
 
 [ext_resource type="PackedScene" uid="uid://dljs6hvv86pay" path="res://systems/planet_generator/planet_base_texture.tscn" id="2_31f3c"]
+[ext_resource type="PackedScene" uid="uid://bn1p76k5180sn" path="res://scenes/player/camera_livre.tscn" id="2_qoqak"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_31f3c"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -54,4 +55,11 @@ cast_shadow = 0
 mesh = SubResource("SphereMesh_qoqak")
 
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="World"]
+visible = false
 mesh = SubResource("CapsuleMesh_31f3c")
+
+[node name="Camera_Livre" parent="World" instance=ExtResource("2_qoqak")]
+transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 610000, 0, 0)
+base_speed = 50.0
+boost_multiplier = 10.0
+max_speed_scale = 200.0

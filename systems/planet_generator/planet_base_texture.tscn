@@ -4,11 +4,12 @@
 [ext_resource type="Script" uid="uid://dwhcoij4tclhp" path="res://systems/planet_generator/script/generator_texture/planet_height_map.gd" id="2_6k0yk"]
 [ext_resource type="Texture2D" uid="uid://dksoyg8cog3s8" path="res://assets/teste_texture/Map-teste-4.png" id="2_ainlj"]
 [ext_resource type="Script" uid="uid://btad4fbt4qvdu" path="res://systems/planet_generator/script/generator_texture/planet_data_texture.gd" id="3_ainlj"]
+[ext_resource type="Material" uid="uid://eme5by6074uv" path="res://systems/planet_generator/materials/planet.tres" id="5_snxbe"]
 [ext_resource type="Script" uid="uid://c2pygnrm3kpq7" path="res://systems/planet_generator/script/generator_texture/planet_mesh_face_2.gd" id="10_1pumw"]
 
 [sub_resource type="Resource" id="Resource_snxbe"]
 script = ExtResource("2_6k0yk")
-max_height = 20.0
+max_height = 6000.0
 panorama = ExtResource("2_ainlj")
 metadata/_custom_type_script = "uid://dwhcoij4tclhp"
 
@@ -21,15 +22,12 @@ frequency = 1.0
 
 [sub_resource type="Resource" id="Resource_0f1ga"]
 script = ExtResource("3_ainlj")
-radius = 800.0
+radius = 600000.0
 height_map = SubResource("Resource_snxbe")
 moisture_noise = SubResource("FastNoiseLite_ainlj")
 temperature_noise = SubResource("FastNoiseLite_snxbe")
 biome_frequency = 6.0
 metadata/_custom_type_script = "uid://btad4fbt4qvdu"
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ainlj"]
-vertex_color_use_as_albedo = true
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_3un04"]
 _surfaces = [{
@@ -114,37 +112,37 @@ script = ExtResource("1_1lldj")
 planeta_data = SubResource("Resource_0f1ga")
 
 [node name="Up" type="MeshInstance3D" parent="."]
-material_override = SubResource("StandardMaterial3D_ainlj")
+material_override = ExtResource("5_snxbe")
 mesh = SubResource("ArrayMesh_3un04")
 script = ExtResource("10_1pumw")
 normal = Vector3(0, 1, 0)
 
 [node name="Down" type="MeshInstance3D" parent="."]
-material_override = SubResource("StandardMaterial3D_ainlj")
+material_override = ExtResource("5_snxbe")
 mesh = SubResource("ArrayMesh_1pumw")
 script = ExtResource("10_1pumw")
 normal = Vector3(0, -1, 0)
 
 [node name="Left" type="MeshInstance3D" parent="."]
-material_override = SubResource("StandardMaterial3D_ainlj")
+material_override = ExtResource("5_snxbe")
 mesh = SubResource("ArrayMesh_b4ucd")
 script = ExtResource("10_1pumw")
 normal = Vector3(-1, 0, 0)
 
 [node name="Right" type="MeshInstance3D" parent="."]
-material_override = SubResource("StandardMaterial3D_ainlj")
+material_override = ExtResource("5_snxbe")
 mesh = SubResource("ArrayMesh_snc61")
 script = ExtResource("10_1pumw")
 normal = Vector3(1, 0, 0)
 
 [node name="Front" type="MeshInstance3D" parent="."]
-material_override = SubResource("StandardMaterial3D_ainlj")
+material_override = ExtResource("5_snxbe")
 mesh = SubResource("ArrayMesh_il0g8")
 script = ExtResource("10_1pumw")
 normal = Vector3(0, 0, -1)
 
 [node name="Back" type="MeshInstance3D" parent="."]
-material_override = SubResource("StandardMaterial3D_ainlj")
+material_override = ExtResource("5_snxbe")
 mesh = SubResource("ArrayMesh_iyjae")
 script = ExtResource("10_1pumw")
 normal = Vector3(0, 0, 1)

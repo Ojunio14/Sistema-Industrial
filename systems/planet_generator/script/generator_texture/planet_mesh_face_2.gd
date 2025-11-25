@@ -55,47 +55,61 @@ func regenerate_mesh(planet_data : Resource):
 			var elevation = pointOnPlanet.length() - planet_data.radius
 			
 			# 3. LÓGICA DE CORES (BIOMAS)
-			var final_color: Color
+# ... (código anterior de pointOnPlanet e elevation) ...
+
+			var final_color: Color = Color(0, 0, 0, 0) # Começa transparente
 			
-			# Se for baixo, é Mar
-			if elevation <= 0.05: 
-				final_color = color_agua
-			else:
-				# Se for Terra, pedimos os dados de Bioma (Temp + Umidade)
-				var biome = planet_data.get_biome_data(pointOnUnitSphere, elevation)
-				var temp = biome.temperature # 0.0 (Polo) a 1.0 (Equador)
-				var moist = biome.moisture   # -1.0 (Seco) a 1.0 (Úmido)
+			# 1. RECUPERA DADOS DO BIOMA
+			var biome = planet_data.get_biome_data(pointOnUnitSphere, elevation)
+			var temp = biome.temperature
+			var moist = biome.moisture
+			
+			# 2. CALCULA SE É ROCHA (A parte que faltava)
+			var is_rock = false
+			var max_h = planet_data.height_map.max_height
+			#b56214   17a335
+			# Regra: Se for muito alto (95%) ou alto com ruído (75%)
+			if elevation > max_h * 0.95:
+				is_rock = true
+			elif elevation > max_h * 0.75:
+				if abs(moist) > 0.4: # Ruído nas bordas da montanha
+					is_rock = true
+
+			# 3. DEFINE OS PESOS DAS TEXTURAS (R, G, B, A)
+			# R = Areia | G = Grama | B = Pedra | A = Neve
+			
+			# É Água?
+			if elevation <= 0.05:
+				final_color = Color(0, 0, 0, 0) # Tudo zero (o shader vai pintar de azul)
 				
-				# Regras de Pintura (Do Frio para o Quente)
+			# É Rocha?
+			elif is_rock: 
+				final_color = Color(0, 0, 1, 0) # 100% Azul (Pedra)
 				
-				# ALTITUDE EXTREMA (Picos de Montanhas viram rocha/neve independente da latitude)
-				if elevation > planet_data.height_map.max_height * 0.8:
-					final_color = color_rocha
+			# É Gelo? (Polo)
+			elif temp < 0.25:
+				final_color = Color(0, 0, 0, 1) # 100% Alpha (Neve)
 				
-				# ZONA POLAR (Frio Extremo)
-				elif temp < 0.2:
-					final_color = color_neve
-					
-				# ZONA SUB-POLAR (Frio)
-				elif temp < 0.4:
-					final_color = color_tundra
-					
-				# ZONA TEMPERADA (Médio)
-				elif temp < 0.7:
-					if moist < -0.2: # Temperado Seco
-						final_color = color_tundra # Ou uma cor de estepe
-					else:
-						final_color = color_taiga # Floresta de Coníferas
-						
-				# ZONA TROPICAL (Quente)
+			# É Tundra? (Mistura)
+			elif temp < 0.45:
+				final_color = Color(0, 0.5, 0, 0.5) # Grama + Neve
+				
+			# É Floresta/Savana?
+			elif temp < 0.25:
+				if moist < -0.3: 
+					final_color = Color(0.5, 0.5, 0, 0) # Savana (Areia + Grama)
 				else:
-					if moist < -0.4: # Muito Seco
-						final_color = color_deserto
-					elif moist < 0.2: # Meio Seco
-						final_color = color_savana
-					else: # Úmido
-						final_color = color_floresta
-			
+					final_color = Color(0, 1, 0, 0) # Floresta (Grama)
+					
+			# É Deserto/Equador?
+			else:
+				if moist < -0.4:
+					final_color = Color(1, 0, 0, 0) # Deserto (Areia)
+				elif moist < 0.2:
+					final_color = Color(0.5, 0.5, 0, 0) # Savana
+				else:
+					final_color = Color(0, 1, 0, 0) # Selva (Grama)
+
 			color_array[i] = final_color
 
 			# Triângulos
