@@ -1,6 +1,6 @@
 @tool
 extends MeshInstance3D
-class_name PlanetMeshFace
+class_name PlanetMeshFace2
 
 
 #vai mostra qual face que queremos renderizar e espicificar qual direçao que ela estar apontando

@@ -1,9 +1,9 @@
 [gd_scene load_steps=14 format=4 uid="uid://cktjc1pi6onjl"]
 
-[ext_resource type="Script" uid="uid://4k8u3awwr6oa" path="res://systems/planet_generator/script/planet.gd" id="1_oihyl"]
-[ext_resource type="Script" uid="uid://bycsxd1ldnh3t" path="res://systems/planet_generator/script/planet_noise.gd" id="2_jm1ga"]
-[ext_resource type="Script" uid="uid://cv0ddngc8ruf5" path="res://systems/planet_generator/script/planet_mesh_face.gd" id="2_p6su4"]
-[ext_resource type="Script" uid="uid://d4ad1k2r4ur0g" path="res://systems/planet_generator/script/planet_data.gd" id="3_udtbi"]
+[ext_resource type="Script" uid="uid://4k8u3awwr6oa" path="res://systems/planet_generator/script/procedural/planet.gd" id="1_oihyl"]
+[ext_resource type="Script" uid="uid://bycsxd1ldnh3t" path="res://systems/planet_generator/script/procedural/planet_noise.gd" id="2_jm1ga"]
+[ext_resource type="Script" uid="uid://cv0ddngc8ruf5" path="res://systems/planet_generator/script/procedural/planet_mesh_face.gd" id="2_p6su4"]
+[ext_resource type="Script" uid="uid://d4ad1k2r4ur0g" path="res://systems/planet_generator/script/procedural/planet_data.gd" id="3_udtbi"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_p81hm"]
 noise_type = 3

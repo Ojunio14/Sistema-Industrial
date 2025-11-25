@@ -1,7 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://3h2vyafju8r5"]
+[gd_scene load_steps=9 format=3 uid="uid://3h2vyafju8r5"]
 
-[ext_resource type="PackedScene" uid="uid://bn1p76k5180sn" path="res://scenes/player/camera_livre.tscn" id="1_t8enk"]
-[ext_resource type="PackedScene" uid="uid://cktjc1pi6onjl" path="res://systems/planet_generator/planet_base.tscn" id="2_31f3c"]
+[ext_resource type="PackedScene" uid="uid://dljs6hvv86pay" path="res://systems/planet_generator/planet_base_texture.tscn" id="2_31f3c"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_31f3c"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -20,6 +19,19 @@ glow_enabled = true
 radius = 100.0
 height = 200.0
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_31f3c"]
+transparency = 1
+albedo_color = Color(0.085200004, 0.64752, 0.71, 0.79607844)
+
+[sub_resource type="SphereMesh" id="SphereMesh_qoqak"]
+material = SubResource("StandardMaterial3D_31f3c")
+radius = 20.0
+height = 40.0
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_31f3c"]
+radius = 22.722
+height = 850.0
+
 [node name="Scene_Main" type="Node"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -35,7 +47,11 @@ shadow_enabled = true
 visible = false
 mesh = SubResource("SphereMesh_2slls")
 
-[node name="Camera_Livre" parent="World" instance=ExtResource("1_t8enk")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 115.03224)
+[node name="planet_base_texture" parent="World" instance=ExtResource("2_31f3c")]
 
-[node name="planet_base" parent="World" instance=ExtResource("2_31f3c")]
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="World"]
+cast_shadow = 0
+mesh = SubResource("SphereMesh_qoqak")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="World"]
+mesh = SubResource("CapsuleMesh_31f3c")
