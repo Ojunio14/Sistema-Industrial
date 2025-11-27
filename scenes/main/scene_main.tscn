@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://3h2vyafju8r5"]
+[gd_scene load_steps=11 format=3 uid="uid://3h2vyafju8r5"]
 
 [ext_resource type="PackedScene" uid="uid://dljs6hvv86pay" path="res://systems/planet_generator/planet_base_texture.tscn" id="2_31f3c"]
 [ext_resource type="PackedScene" uid="uid://bn1p76k5180sn" path="res://scenes/player/camera_livre.tscn" id="2_qoqak"]
@@ -30,8 +30,9 @@ radius = 20.0
 height = 40.0
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_31f3c"]
-radius = 22.722
-height = 850.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_31f3c"]
+radius = 600000.0
 
 [node name="Scene_Main" type="Node"]
 
@@ -48,18 +49,28 @@ shadow_enabled = true
 visible = false
 mesh = SubResource("SphereMesh_2slls")
 
-[node name="planet_base_texture" parent="World" instance=ExtResource("2_31f3c")]
-
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="World"]
 cast_shadow = 0
 mesh = SubResource("SphereMesh_qoqak")
 
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 600002, 0, 0)
 visible = false
 mesh = SubResource("CapsuleMesh_31f3c")
 
 [node name="Camera_Livre" parent="World" instance=ExtResource("2_qoqak")]
-transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 610000, 0, 0)
-base_speed = 50.0
-boost_multiplier = 10.0
-max_speed_scale = 200.0
+transform = Transform3D(1, 0, 0, 0, 0.9999999841798328, 0, 0, 0, 0.9999999841798328, -810, 0, 0)
+near = 0.2
+base_speed = 1.0
+boost_multiplier = 25.0
+max_speed_scale = 1000.0
+
+[node name="Teste" type="Node3D" parent="World" groups=["Teste"]]
+
+[node name="planet_base_texture" parent="World" node_paths=PackedStringArray("player") instance=ExtResource("2_31f3c")]
+player = NodePath("../Camera_Livre")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="World"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/StaticBody3D"]
+shape = SubResource("SphereShape3D_31f3c")

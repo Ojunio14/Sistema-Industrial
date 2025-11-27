@@ -6,3 +6,5 @@
 transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 0, 0)
 far = 600000.0
 script = ExtResource("1_x2vk8")
+
+[node name="FloatingOrigin" type="Node" parent="."]

@@ -1,62 +1,80 @@
 shader_type spatial;
 
-// Input das Texturas (Arraste as imagens aqui no Inspector)
+// IMPORTANTE: REMOVEMOS O 'render_mode world_vertex_coords'.
+// Agora o VERTEX é local (pequeno) e seguro.
+
+// --- TEXTURAS ---
 uniform sampler2D texture_sand : source_color, filter_linear_mipmap_anisotropic;
 uniform sampler2D texture_grass : source_color, filter_linear_mipmap_anisotropic;
 uniform sampler2D texture_rock : source_color, filter_linear_mipmap_anisotropic;
 uniform sampler2D texture_snow : source_color, filter_linear_mipmap_anisotropic;
 
-// Tamanho das texturas (Quanto maior, mais elas se repetem)
-uniform float uv_scale = 0.5;
+// --- ESCALA ---
+uniform float scale_micro = 1.0; 
 
-// Função Mágica: Triplanar Mapping
-// Ela projeta a textura de 3 lados (X, Y, Z) e mistura
-vec4 triplanar_texture(sampler2D p_sampler, vec3 p_weights, vec3 p_triplanar_pos) {
+// --- DADOS DO SCRIPT (Juan's Method) ---
+uniform vec3 chunk_offset;
+
+// --- VARIÁVEIS PARA O FRAGMENT ---
+varying vec3 v_stable_pos; 
+varying vec3 v_world_normal;
+
+void vertex() {
+	// 1. POSIÇÃO ESTÁVEL (RTE)
+	// VERTEX = Posição local do vértice (Pequeno, vem do script)
+	// chunk_offset = Resto da divisão da posição do mundo (Pequeno, vem do script)
+	// Resultado: Uma posição perfeita para texturizar, sem números gigantes.
+	v_stable_pos = VERTEX + chunk_offset;
+	
+	// 2. NORMAL DO MUNDO (MANUAL)
+	// Como desligamos o world_vertex_coords, o NORMAL é local.
+	// Precisamos rodar ele para alinhar com o planeta, mas SEM somar a posição gigante.
+	// Usamos (NORMAL, 0.0) para aplicar apenas a Rotação da Model Matrix.
+	v_world_normal = normalize((MODEL_MATRIX * vec4(NORMAL, 0.0)).xyz);
+}
+
+vec4 get_triplanar_sample(sampler2D p_sampler, vec3 p_weights, vec3 p_pos, float p_scale) {
 	vec4 samp = vec4(0.0);
-	samp += texture(p_sampler, p_triplanar_pos.xy * uv_scale) * p_weights.z;
-	samp += texture(p_sampler, p_triplanar_pos.xz * uv_scale) * p_weights.y;
-	samp += texture(p_sampler, p_triplanar_pos.zy * uv_scale) * p_weights.x;
+	samp += texture(p_sampler, p_pos.xz * p_scale) * p_weights.y; // Topo
+	samp += texture(p_sampler, p_pos.xy * p_scale) * p_weights.z; // Frente
+	samp += texture(p_sampler, p_pos.zy * p_scale) * p_weights.x; // Lado
 	return samp;
 }
 
 void fragment() {
-	// 1. Calcular pesos Triplanares (Baseado na Normal do terreno)
-	// Isso evita que a textura estique em paredes verticais
-	vec3 blending = abs(NORMAL);
+	// --- BLENDING COM NORMAL CORRIGIDA ---
+	vec3 blending = abs(v_world_normal);
 	blending = normalize(max(blending, 0.00001));
+	
+	// Nitidez na curva (opcional, mantenha se gostou do resultado anterior)
+	blending = pow(blending, vec3(4.0));
+	
 	float b = (blending.x + blending.y + blending.z);
 	blending /= vec3(b, b, b);
 
-	// 2. Ler as 4 texturas usando Triplanar
-	// VERTEX é a posição do ponto no mundo
-	vec4 col_sand = triplanar_texture(texture_sand, blending, VERTEX);
-	vec4 col_grass = triplanar_texture(texture_grass, blending, VERTEX);
-	vec4 col_rock = triplanar_texture(texture_rock, blending, VERTEX);
-	vec4 col_snow = triplanar_texture(texture_snow, blending, VERTEX);
+	// --- LEITURA DAS TEXTURAS ---
+	// Usamos a v_stable_pos que é livre de tremedeira
+	vec3 sand_mic = get_triplanar_sample(texture_sand, blending, v_stable_pos, scale_micro).rgb;
+	vec3 grass_mic = get_triplanar_sample(texture_grass, blending, v_stable_pos, scale_micro).rgb;
+	vec3 rock_mic = get_triplanar_sample(texture_rock, blending, v_stable_pos, scale_micro).rgb;
+	vec3 snow_mic = get_triplanar_sample(texture_snow, blending, v_stable_pos, scale_micro).rgb;
 
-	// 3. Misturar baseado na COR DO VÉRTICE (COLOR)
-	// COLOR.r = Peso da Areia
-	// COLOR.g = Peso da Grama
-	// COLOR.b = Peso da Rocha
-	// COLOR.a = Peso da Neve
-	
+	// --- MISTURA SPLATMAP ---
 	vec3 final_albedo = vec3(0.0);
+	final_albedo += sand_mic * COLOR.r;
+	final_albedo += grass_mic * COLOR.g;
+	final_albedo += rock_mic * COLOR.b;
+	final_albedo += snow_mic * COLOR.a;
 	
-	// Soma as texturas multiplicadas pelo peso que definimos no script
-	final_albedo += col_sand.rgb * COLOR.r;
-	final_albedo += col_grass.rgb * COLOR.g;
-	final_albedo += col_rock.rgb * COLOR.b;
-	final_albedo += col_snow.rgb * COLOR.a;
-	
-	// Adiciona uma cor azul base onde não tem textura (Água)
-	// Se a soma dos pesos for baixa, assumimos que é água
+	// Água
 	float total_weight = COLOR.r + COLOR.g + COLOR.b + COLOR.a;
 	if (total_weight < 0.1) {
-		final_albedo = vec3(0.0, 0.2, 0.5); // Azul simples pra água
+		final_albedo = vec3(0.0, 0.2, 0.5); 
 		ROUGHNESS = 0.1;
-		METALLIC = 0.1;
+		METALLIC = 0.5;
 	} else {
-		ROUGHNESS = 0.9; // Terra é fosca
+		ROUGHNESS = 0.9;
+		METALLIC = 0.0;
 	}
 
 	ALBEDO = final_albedo;

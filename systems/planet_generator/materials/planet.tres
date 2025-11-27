@@ -1,12 +1,7 @@
-[gd_resource type="ShaderMaterial" load_steps=10 format=3 uid="uid://eme5by6074uv"]
+[gd_resource type="ShaderMaterial" load_steps=9 format=3 uid="uid://eme5by6074uv"]
 
 [ext_resource type="Shader" uid="uid://bc6fuy3qucpst" path="res://systems/planet_generator/shaders/Triplanar_Mapping_planet.gdshader" id="1_px7vi"]
-
-[sub_resource type="Gradient" id="Gradient_px7vi"]
-colors = PackedColorArray(0.09019608, 0.6392157, 0.20784314, 1, 0.09019608, 0.6392157, 0.20784314, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_ixcfh"]
-gradient = SubResource("Gradient_px7vi")
+[ext_resource type="Texture2D" uid="uid://88ooc32aksjx" path="res://assets/teste_texture/Poliigon_GrassPatchyGround_4585_BaseColor.jpg" id="2_ixcfh"]
 
 [sub_resource type="Gradient" id="Gradient_mal4l"]
 colors = PackedColorArray(0.29, 0.29, 0.29, 1, 0.53, 0.53, 0.53, 1)
@@ -30,7 +25,8 @@ gradient = SubResource("Gradient_u73y2")
 render_priority = 0
 shader = ExtResource("1_px7vi")
 shader_parameter/texture_sand = SubResource("GradientTexture1D_fno17")
-shader_parameter/texture_grass = SubResource("GradientTexture1D_ixcfh")
+shader_parameter/texture_grass = ExtResource("2_ixcfh")
 shader_parameter/texture_rock = SubResource("GradientTexture1D_8j7v6")
 shader_parameter/texture_snow = SubResource("GradientTexture1D_u155r")
-shader_parameter/uv_scale = 2500.0
+shader_parameter/scale_micro = 1.0
+shader_parameter/chunk_offset = Vector3(0, 0, 0)
