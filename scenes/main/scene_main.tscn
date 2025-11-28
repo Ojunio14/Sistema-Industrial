@@ -1,6 +1,14 @@
+<<<<<<< Updated upstream
 [gd_scene load_steps=6 format=3 uid="uid://3h2vyafju8r5"]
 
 [ext_resource type="PackedScene" uid="uid://bn1p76k5180sn" path="res://scenes/player/camera_livre.tscn" id="1_t8enk"]
+=======
+[gd_scene load_steps=12 format=3 uid="uid://3h2vyafju8r5"]
+
+[ext_resource type="PackedScene" uid="uid://dljs6hvv86pay" path="res://systems/planet_generator/planet_base_texture.tscn" id="2_31f3c"]
+[ext_resource type="PackedScene" uid="uid://bn1p76k5180sn" path="res://scenes/player/camera_livre.tscn" id="2_qoqak"]
+[ext_resource type="PackedScene" uid="uid://dqws4o8q7ypp" path="res://scenes/player/gimbal_orbital.tscn" id="3_qoqak"]
+>>>>>>> Stashed changes
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_31f3c"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -33,5 +41,42 @@ shadow_enabled = true
 [node name="MeshInstance3D" type="MeshInstance3D" parent="World"]
 mesh = SubResource("SphereMesh_2slls")
 
+<<<<<<< Updated upstream
 [node name="Camera_Livre" parent="World" instance=ExtResource("1_t8enk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 115.03224)
+=======
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="World"]
+visible = false
+cast_shadow = 0
+mesh = SubResource("SphereMesh_qoqak")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 600002, 0, 0)
+visible = false
+mesh = SubResource("CapsuleMesh_31f3c")
+
+[node name="Camera_Livre" parent="World" instance=ExtResource("2_qoqak")]
+transform = Transform3D(1, 0, 0, 0, 0.9999999841798328, 0, 0, 0, 0.9999999841798328, -810, 0, 0)
+near = 0.2
+base_speed = 1.0
+boost_multiplier = 25.0
+max_speed_scale = 1000.0
+
+[node name="Teste" type="Node3D" parent="World" groups=["Teste"]]
+
+[node name="planet_base_texture" parent="World" node_paths=PackedStringArray("player") instance=ExtResource("2_31f3c")]
+player = NodePath("../Camera_Livre")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="World"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/StaticBody3D"]
+shape = SubResource("SphereShape3D_31f3c")
+
+[node name="Gimbal_Orbital" parent="World" node_paths=PackedStringArray("target") instance=ExtResource("3_qoqak")]
+target = NodePath("../planet_base_texture")
+sensitivity = 0.5
+orbit_radius = 800.0
+minimum_orbit_distance = 820.0
+maximum_orbit_distance = 1600.0
+current_cam = true
+>>>>>>> Stashed changes
